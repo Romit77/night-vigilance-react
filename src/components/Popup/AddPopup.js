@@ -1,69 +1,72 @@
-import React, { useEffect, useState } from 'react'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faArrowLeft, faTimes, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { Tabs, Tab, Box } from '@mui/material'
-import './Popup.css'
+import React, { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faArrowLeft,
+  faTimes,
+  faPlus,
+} from "@fortawesome/free-solid-svg-icons";
+import { Tabs, Tab, Box } from "@mui/material";
+import "./Popup.css";
 
 function Popup({ trigger, setTrigger }) {
-  const [selectedTab, setSelectedTab] = useState(0)
-  const [members, setMembers] = useState([{ role: 'Member' }])
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [members, setMembers] = useState([{ role: "Member" }]);
   const [roles, setRoles] = useState([
-    'Team Head',
-    'Security Staff',
-    'Shift In Charge',
-    'Members',
-  ])
+    "Team Head",
+    "Security Staff",
+    "Shift In Charge",
+    "Members",
+  ]);
 
   const handleTabChange = (event, newValue) => {
-    setSelectedTab(newValue)
-  }
+    setSelectedTab(newValue);
+  };
 
   const handleMemberChange = (index, field, value) => {
-    const newMembers = [...members]
-    newMembers[index][field] = value
-    setMembers(newMembers)
-  }
+    const newMembers = [...members];
+    newMembers[index][field] = value;
+    setMembers(newMembers);
+  };
 
   const addMember = () => {
-    setMembers([...members, { role: 'Member' }])
-  }
+    setMembers([...members, { role: "Member" }]);
+  };
 
   const handleBackButtonClick = () => {
-    setTrigger(false)
-  }
+    setTrigger(false);
+  };
 
   const handleNextButtonClick = () => {
-    // Submit all members
-    console.log('Members:', members)
-    setTrigger(false)
-    // Remove the selected role from the roles array
-    setRoles(roles.filter((_, index) => index !== selectedTab))
-  }
+    console.log("Members:", members);
+    setTrigger(false);
+
+    setRoles(roles.filter((_, index) => index !== selectedTab));
+  };
 
   useEffect(() => {
     const closePopup = (e) => {
-      if (e.key === 'Escape') {
-        setTrigger(false)
+      if (e.key === "Escape") {
+        setTrigger(false);
       }
-    }
-    window.addEventListener('keydown', closePopup)
-    return () => window.removeEventListener('keydown', closePopup)
-  }, [setTrigger])
+    };
+    window.addEventListener("keydown", closePopup);
+    return () => window.removeEventListener("keydown", closePopup);
+  }, [setTrigger]);
 
   const getPlaceholder = (field) => {
-    const isSecurity = roles[selectedTab] === 'Security Staff'
+    const isSecurity = roles[selectedTab] === "Security Staff";
     const placeholders = {
-      name: isSecurity ? 'Security Name' : 'Emp. Name',
-      code: isSecurity ? 'Security Code' : 'Emp. Code',
-      designation: isSecurity ? 'Security Designation' : 'Designation',
-      contact: isSecurity ? 'Security Contact No.' : 'Contact No.',
+      name: isSecurity ? "Security Name" : "Emp. Name",
+      code: isSecurity ? "Security Code" : "Emp. Code",
+      designation: isSecurity ? "Security Designation" : "Designation",
+      contact: isSecurity ? "Security Contact No." : "Contact No.",
       reporting: isSecurity
-        ? 'Security Reporting Officer'
-        : 'Reporting Officer',
-      hod: isSecurity ? 'Security HOD' : 'HOD',
-    }
-    return placeholders[field]
-  }
+        ? "Security Reporting Officer"
+        : "Reporting Officer",
+      hod: isSecurity ? "Security HOD" : "HOD",
+    };
+    return placeholders[field];
+  };
 
   return trigger ? (
     <div className="popup-add">
@@ -75,7 +78,7 @@ function Popup({ trigger, setTrigger }) {
               <FontAwesomeIcon icon={faTimes} />
             </button>
           </div>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs
               value={selectedTab}
               onChange={handleTabChange}
@@ -86,7 +89,7 @@ function Popup({ trigger, setTrigger }) {
               ))}
             </Tabs>
           </Box>
-          {roles[selectedTab] === 'Members' ? (
+          {roles[selectedTab] === "Members" ? (
             <>
               {members.map((member, index) => (
                 <div key={index}>
@@ -100,9 +103,9 @@ function Popup({ trigger, setTrigger }) {
                         id={`email-${index}`}
                         className="form-control"
                         placeholder="Emp@jindalsteel.com"
-                        value={member.email || ''}
+                        value={member.email || ""}
                         onChange={(e) =>
-                          handleMemberChange(index, 'email', e.target.value)
+                          handleMemberChange(index, "email", e.target.value)
                         }
                       />
                     </div>
@@ -114,10 +117,10 @@ function Popup({ trigger, setTrigger }) {
                         type="text"
                         id={`name-${index}`}
                         className="form-control"
-                        placeholder={getPlaceholder('name')}
-                        value={member.name || ''}
+                        placeholder={getPlaceholder("name")}
+                        value={member.name || ""}
                         onChange={(e) =>
-                          handleMemberChange(index, 'name', e.target.value)
+                          handleMemberChange(index, "name", e.target.value)
                         }
                       />
                     </div>
@@ -129,10 +132,10 @@ function Popup({ trigger, setTrigger }) {
                         type="text"
                         id={`code-${index}`}
                         className="form-control"
-                        placeholder={getPlaceholder('code')}
-                        value={member.code || ''}
+                        placeholder={getPlaceholder("code")}
+                        value={member.code || ""}
                         onChange={(e) =>
-                          handleMemberChange(index, 'code', e.target.value)
+                          handleMemberChange(index, "code", e.target.value)
                         }
                       />
                     </div>
@@ -146,11 +149,11 @@ function Popup({ trigger, setTrigger }) {
                       <select
                         id={`department-${index}`}
                         className="form-select"
-                        value={member.department || ''}
+                        value={member.department || ""}
                         onChange={(e) =>
                           handleMemberChange(
                             index,
-                            'department',
+                            "department",
                             e.target.value
                           )
                         }
@@ -174,12 +177,12 @@ function Popup({ trigger, setTrigger }) {
                         type="text"
                         id={`designation-${index}`}
                         className="form-control"
-                        placeholder={getPlaceholder('designation')}
-                        value={member.designation || ''}
+                        placeholder={getPlaceholder("designation")}
+                        value={member.designation || ""}
                         onChange={(e) =>
                           handleMemberChange(
                             index,
-                            'designation',
+                            "designation",
                             e.target.value
                           )
                         }
@@ -196,10 +199,10 @@ function Popup({ trigger, setTrigger }) {
                         type="text"
                         id={`contact-${index}`}
                         className="form-control"
-                        placeholder={getPlaceholder('contact')}
-                        value={member.contact || ''}
+                        placeholder={getPlaceholder("contact")}
+                        value={member.contact || ""}
                         onChange={(e) =>
-                          handleMemberChange(index, 'contact', e.target.value)
+                          handleMemberChange(index, "contact", e.target.value)
                         }
                       />
                     </div>
@@ -214,10 +217,10 @@ function Popup({ trigger, setTrigger }) {
                         type="text"
                         id={`reporting-${index}`}
                         className="form-control"
-                        placeholder={getPlaceholder('reporting')}
-                        value={member.reporting || ''}
+                        placeholder={getPlaceholder("reporting")}
+                        value={member.reporting || ""}
                         onChange={(e) =>
-                          handleMemberChange(index, 'reporting', e.target.value)
+                          handleMemberChange(index, "reporting", e.target.value)
                         }
                       />
                     </div>
@@ -229,10 +232,10 @@ function Popup({ trigger, setTrigger }) {
                         type="text"
                         id={`hod-${index}`}
                         className="form-control"
-                        placeholder={getPlaceholder('hod')}
-                        value={member.hod || ''}
+                        placeholder={getPlaceholder("hod")}
+                        value={member.hod || ""}
                         onChange={(e) =>
-                          handleMemberChange(index, 'hod', e.target.value)
+                          handleMemberChange(index, "hod", e.target.value)
                         }
                       />
                     </div>
@@ -247,18 +250,18 @@ function Popup({ trigger, setTrigger }) {
               <div className="d-flex justify-content-end mt-3">
                 <button
                   className="btn btn-dark"
-                  style={{ width: '100px', margin: '5px' }}
+                  style={{ width: "100px", margin: "5px" }}
                   onClick={handleBackButtonClick}
                 >
                   <FontAwesomeIcon
                     icon={faArrowLeft}
-                    style={{ color: '#ffffff' }}
+                    style={{ color: "#ffffff" }}
                   />
                   &nbsp; Back
                 </button>
                 <button
                   className="btn btn-success"
-                  style={{ width: '100px', margin: '5px' }}
+                  style={{ width: "100px", margin: "5px" }}
                   onClick={handleNextButtonClick}
                 >
                   Submit
@@ -268,7 +271,7 @@ function Popup({ trigger, setTrigger }) {
           ) : (
             <>
               <div className="row mt-3">
-                {roles[selectedTab] !== 'Security Staff' && (
+                {roles[selectedTab] !== "Security Staff" && (
                   <div className="col">
                     <label htmlFor="email" className="form-label">
                       Email
@@ -289,7 +292,7 @@ function Popup({ trigger, setTrigger }) {
                     type="text"
                     id="code"
                     className="form-control"
-                    placeholder={getPlaceholder('code')}
+                    placeholder={getPlaceholder("code")}
                   />
                 </div>
                 <div className="col">
@@ -300,7 +303,7 @@ function Popup({ trigger, setTrigger }) {
                     type="text"
                     id="name"
                     className="form-control"
-                    placeholder={getPlaceholder('name')}
+                    placeholder={getPlaceholder("name")}
                   />
                 </div>
                 <div className="col">
@@ -324,7 +327,7 @@ function Popup({ trigger, setTrigger }) {
                     type="text"
                     id="designation"
                     className="form-control"
-                    placeholder={getPlaceholder('designation')}
+                    placeholder={getPlaceholder("designation")}
                   />
                 </div>
                 <div className="col">
@@ -335,7 +338,7 @@ function Popup({ trigger, setTrigger }) {
                     type="text"
                     id="contact"
                     className="form-control"
-                    placeholder={getPlaceholder('contact')}
+                    placeholder={getPlaceholder("contact")}
                   />
                 </div>
                 <div className="col">
@@ -346,7 +349,7 @@ function Popup({ trigger, setTrigger }) {
                     type="text"
                     id="reporting"
                     className="form-control"
-                    placeholder={getPlaceholder('reporting')}
+                    placeholder={getPlaceholder("reporting")}
                   />
                 </div>
                 <div className="col mb-5">
@@ -357,7 +360,7 @@ function Popup({ trigger, setTrigger }) {
                     type="text"
                     id="hod"
                     className="form-control"
-                    placeholder={getPlaceholder('hod')}
+                    placeholder={getPlaceholder("hod")}
                   />
                 </div>
               </div>
@@ -367,8 +370,8 @@ function Popup({ trigger, setTrigger }) {
       </div>
     </div>
   ) : (
-    ''
-  )
+    ""
+  );
 }
 
-export default Popup
+export default Popup;

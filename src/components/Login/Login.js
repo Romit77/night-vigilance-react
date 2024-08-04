@@ -16,6 +16,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const emailSchema = z.string().email("Invalid email format");
   const passwordSchema = z
@@ -40,6 +41,24 @@ const Login = () => {
     resetForm();
   };
 
+  const closeModal = () => {
+    setIsLoginModalOpen(false);
+    setIsSignupModalOpen(false);
+    resetForm();
+  };
+
+  const switchToSignup = () => {
+    setIsLoginModalOpen(false);
+    setIsSignupModalOpen(true);
+    setError("");
+  };
+
+  const switchToLogin = () => {
+    setIsSignupModalOpen(false);
+    setIsLoginModalOpen(true);
+    setError("");
+  };
+
   const resetForm = () => {
     setEmail("");
     setPassword("");
@@ -47,19 +66,22 @@ const Login = () => {
   };
 
   const handleLogin = async () => {
+    setError("");
+    setIsLoading(true);
     try {
       emailSchema.parse(email);
       passwordSchema.parse(password);
     } catch (err) {
       if (err instanceof z.ZodError) {
         setError(err.errors[0].message);
+        setIsLoading(false);
         return;
       }
     }
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/users/login",
+        process.env.REACT_APP_API_URL + "/api/users/login",
         {
           user_mail: email,
           password: password,
@@ -69,29 +91,34 @@ const Login = () => {
       if (response.status === 200) {
         toast.success("Login successful!");
         setIsAuthenticated(true);
-        handleCloseLoginModal();
+        closeModal();
         navigate("/dashboard");
       }
     } catch (error) {
       toast.error("Login failed. Please try again.");
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSignup = async () => {
+    setError("");
+    setIsLoading(true);
     try {
       emailSchema.parse(email);
       passwordSchema.parse(password);
     } catch (err) {
       if (err instanceof z.ZodError) {
         setError(err.errors[0].message);
+        setIsLoading(false);
         return;
       }
     }
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/users/register",
+        process.env.REACT_APP_API_URL + "/api/users/register",
         {
           userMail: email,
           password: password,
@@ -100,19 +127,20 @@ const Login = () => {
 
       if (response.status === 200) {
         toast.success("Signup successful!");
-        handleCloseSignupModal();
+        closeModal();
         navigate("/dashboard");
       }
     } catch (error) {
       toast.error("Signup failed. Please try again.");
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleOverlayClick = (event) => {
     if (event.target.classList.contains("modal-overlay")) {
-      handleCloseLoginModal();
-      handleCloseSignupModal();
+      closeModal();
     }
   };
 
@@ -240,7 +268,7 @@ const Login = () => {
         {isLoginModalOpen && (
           <div className="modal-overlay" onClick={handleOverlayClick}>
             <div className="modal-container">
-              <button className="close-button" onClick={handleCloseLoginModal}>
+              <button className="close-button" onClick={closeModal}>
                 &times;
               </button>
               <h2>Login to your account</h2>
@@ -260,18 +288,16 @@ const Login = () => {
                 className="modal-input"
               />
               {error && <p className="error-message">{error}</p>}
-              <button className="btn btn-dark w-50 m-4" onClick={handleLogin}>
-                Log In
+              <button
+                className="btn btn-dark w-50 m-4"
+                onClick={handleLogin}
+                disabled={isLoading}
+              >
+                {isLoading ? "Logging In..." : "Log In"}
               </button>
               <p>
                 Don't have an account?{" "}
-                <button
-                  className="btn-link"
-                  onClick={() => {
-                    handleCloseLoginModal();
-                    handleOpenSignupModal();
-                  }}
-                >
+                <button className="btn-link" onClick={switchToSignup}>
                   Sign Up
                 </button>
               </p>
@@ -287,7 +313,7 @@ const Login = () => {
         {isSignupModalOpen && (
           <div className="modal-overlay" onClick={handleOverlayClick}>
             <div className="modal-container">
-              <button className="close-button" onClick={handleCloseSignupModal}>
+              <button className="close-button" onClick={closeModal}>
                 &times;
               </button>
               <h2>Sign Up for a new account</h2>
@@ -307,18 +333,16 @@ const Login = () => {
                 className="modal-input"
               />
               {error && <p className="error-message">{error}</p>}
-              <button className="btn btn-dark w-50 m-4" onClick={handleSignup}>
-                Sign Up
+              <button
+                className="btn btn-dark w-50 m-4"
+                onClick={handleSignup}
+                disabled={isLoading}
+              >
+                {isLoading ? "Signing Up..." : "Sign Up"}
               </button>
               <p>
                 Already have an account?{" "}
-                <button
-                  className="btn-link"
-                  onClick={() => {
-                    handleCloseSignupModal();
-                    handleOpenLoginModal();
-                  }}
-                >
+                <button className="btn-link" onClick={switchToLogin}>
                   Log In
                 </button>
               </p>

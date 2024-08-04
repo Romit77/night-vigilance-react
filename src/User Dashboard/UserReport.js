@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faSearch,
   faPlus,
-  faPencil,
   faEye,
-  faXmark,
-  faTrash,
   faSort,
   faSortUp,
   faSortDown,
@@ -16,7 +12,6 @@ import AddMemberForm from "../components/AddMemberFrom/AddMemberForm";
 import "./dashboard.css";
 import TeamView from "../components/TeamViewDashboard/TeamViewDashboard";
 import TeamDetails from "../components/TeamDetails/TeamDetails";
-// import ReportPopup from "../ReportPopup/ReportPopup";
 
 const data = [
   {
